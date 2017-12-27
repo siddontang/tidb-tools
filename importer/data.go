@@ -17,6 +17,8 @@ import (
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/pingcap/tidb-tools/pkg/base26"
 )
 
 var defaultStep int64 = 1
@@ -87,27 +89,8 @@ func (d *datum) uniqString(n int) string {
 	data := d.intValue
 	d.Unlock()
 
-	var value []byte
-	for ; ; n-- {
-		if n == 0 {
-			break
-		}
 
-		idx := data % int64(len(alphabet))
-		data = data / int64(len(alphabet))
-
-		value = append(value, alphabet[idx])
-
-		if data == 0 {
-			break
-		}
-	}
-
-	for i, j := 0, len(value)-1; i < j; i, j = i+1, j-1 {
-		value[i], value[j] = value[j], value[i]
-	}
-
-	return string(value)
+	return base26.Encode(data, n)
 }
 
 func (d *datum) uniqTime() string {

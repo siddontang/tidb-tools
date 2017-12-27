@@ -1,7 +1,7 @@
-package base62
+package base26
 
-// base charset [0-9A-Za-z]
-const base int64 = 62
+// base charset [a-z]
+const base int64 = 26
 
 // Encode encodes m to a string
 func Encode(m int64, length int) string {
@@ -15,13 +15,7 @@ func Encode(m int64, length int) string {
 	}
 	
 	for i, v := range bits {
-		if v < 10 {
-			strs[i] = byte(v) + '0'
-		} else if v < 36 {
-			strs[i] = byte(v-10) + 'A'
-		} else {
-			strs[i] = byte(v-36) + 'a'
-		}
+		strs[i] = byte(v) + 'a'
 	}
 
 	return string(strs)
@@ -33,13 +27,7 @@ func Decode(str string) int64 {
 	var origin int64
 
 	for _, v := range str {
-		if v <= '9' {
-			origin += int64(v - '0')*magnitude
-		} else if v <= 'Z' {
-			origin += int64(v - 'A' + 10)*magnitude
-		} else {
-			origin += int64(v - 'a' + 36)*magnitude
-		}
+		origin += int64(v - 'a')*magnitude
 		magnitude = magnitude*base
 	}
 
